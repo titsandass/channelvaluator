@@ -7,10 +7,10 @@ class Grid:
         self._minPt     = np.round(minPt, 4)
         self._maxPt     = np.round(maxPt, 4)
         
-        self._bottomleft= np.round(np.floor(self._minPt / gridSize) * gridSize, 2)
-        self._topright  = np.round(np.ceil(self._maxPt / gridSize) * gridSize, 2)
+        self._bottomleft= np.floor(self._minPt / gridSize) * gridSize
+        self._topright  = np.ceil(self._maxPt / gridSize) * gridSize
         
-        self._width, self._depth, self._height = np.round(self._topright - self._bottomleft, 2)
+        self._width, self._depth, self._height = self._topright - self._bottomleft
 
         self._numWidth  = np.int32(self._width / gridSize)
         self._numDepth  = np.int32(self._depth / gridSize)
@@ -25,7 +25,7 @@ class Grid:
             for j in range(self._numDepth+1):
                 for k in range(self._numHeight+1):
                     point = self._bottomleft + (i*self._gridSize, j*self._gridSize, k*self._gridSize)
-                    self._Vertices[i][j][k] = self._GridVertex(np.round(point,2))
+                    self._Vertices[i][j][k] = self._GridVertex(point)
 
     def get_including_gridVertices_of(self, atomORSphere):
         center  = atomORSphere[0][:3]
@@ -51,11 +51,14 @@ class Grid:
     class _GridVertex:
         def __init__(self, point):
             self.point              = point
-            self.checked            = False
+
+            self.checked_atom       = False
             self.checked_channel    = False
 
-            self.intersectingAtoms  = list()
-            self.intersectingWaters = list()
+            self.boundary           = False
+            self.interior           = False
+
+            # self.intersectingAtoms  = list()
             
         @property
         def x(self):
@@ -75,23 +78,29 @@ class Grid:
         def __hash__(self):
             return hash(id(self))
 
-        def check_intersection_with_atom(self, atom, isWater):
+        def check_intersection_with_atom(self, atom):
             center  = np.round(atom[0][:3], 3)
             radii   = np.round(atom[0][3], 3)
 
             dist = np.linalg.norm(self.point - center)
             if dist < radii:
-                self.checked = True
-                if isWater:
-                    self.intersectingWaters.append(atom)
-                else:
-                    self.intersectingAtoms.append(atom)
+                self.checked_atom = True
+                # self.intersectingAtoms.append(atom)
+
+        def check_intersection_with_increased_sphere(self, increasedSphere):
+            center  = np.round(increasedSphere[:3], 4)
+            radii   = np.round(increasedSphere[3], 4)
+
+            dist = np.linalg.norm(self.point - center)
+            if dist < radii:
+                self.boundary = True            
 
         def has_intersection_with_sphere(self, sphere):
             center  = np.round(sphere[:3], 4)
             radii   = np.round(sphere[3], 3)
 
-            dist = np.linalg.norm(self.point - center)            
+            dist = np.linalg.norm(self.point - center)
+
             if np.absolute(dist - radii) < 1e-6:
                 return 'Boundary'
             elif dist < radii:
@@ -100,13 +109,25 @@ class Grid:
                 return 'Outside'
 
         def set_checked(self, checked:bool):
-            self.checked = checked
+            self.checked_atom = checked
         
         def set_checked_channel(self, checked:bool):
             self.checked_channel = checked
+
+        def set_boundary(self, checked:bool):
+            self.boundary = checked
+
+        def set_interior(self, checked:bool):
+            self.interior = checked
         
         def is_checked(self):
-            return self.checked
+            return self.checked_atom
 
         def is_checked_channel(self):
             return self.checked_channel
+
+        def is_boundary(self):
+            return self.boundary
+
+        def is_interior(self):
+            return self.interior
