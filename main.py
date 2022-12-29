@@ -25,10 +25,10 @@ CV = ChannelValuator()
 
 CV.set_protein(pdbFileName, includeHETATM)
 CV.set_grid(gridSize)
-CV.set_channels(channelFilePaths)
 
-CV.find_ground_truth_grid(cutoffRatio)
+CV.set_channels(channelFilePaths)
 CV.check_intersection_with_channels()
+
 CV.validate_channel()
 
 CV.write_results(None)

@@ -5,8 +5,9 @@ import numpy as np
 
 class ChannelValuator:
     def __init__(self):
-        self._proteinFilePath   = None
+        self._pdbFileName       = None
         self._protein           = Protein()
+        self._includeHETATM     = False
         
         self._channelFilePaths  = None
         self._channels          = dict()
@@ -14,18 +15,19 @@ class ChannelValuator:
         self._min = np.array([np.inf, np.inf, np.inf]   , dtype=np.float32)
         self._max = np.array([-np.inf, -np.inf, -np.inf], dtype=np.float32)
 
-    def set_protein(self, proteinFilePath, includeHETATM):
+    def set_protein(self, pdbFileName, includeHETATM):
         from VDWradius import VDWRadius
         import os
         
-        if not os.path.exists(proteinFilePath):
-            raise FileExistsError('No Protein File : {}'.format(proteinFilePath))
+        if not os.path.exists(pdbFileName):
+            raise FileExistsError('No Protein File : {}'.format(pdbFileName))
         
-        self._proteinFilePath = proteinFilePath
-        with open(self._proteinFilePath, 'r') as f:
+        self._pdbFileName = pdbFileName
+        self._includeHETATM = includeHETATM
+        with open(self._pdbFileName, 'r') as f:
             # print("Protein file : {} Loaded.\n".format(proteinFilePath))
 
-            proteinName = proteinFilePath.split('/')[-1].replace('.pdb','')
+            proteinName = pdbFileName.split('/')[-1].replace('.pdb','')
             self._protein.set_name(proteinName)
             
             lines = f.readlines()
@@ -48,15 +50,15 @@ class ChannelValuator:
                             # raise BaseException('NO van der Waals radius : {}'.format(atomName))
                             parsedAtomName = ''
                             for char in atomName:
-                                if char.isalpha():
+                                if char.isalpha():  
                                     parsedAtomName += char
                             r = VDWRadius[parsedAtomName.split()[-1].rjust(2,' ')]
                         
                         atom    = np.array([x,y,z,r], dtype=np.float32)
                         self._protein.add_atoms((atom, atomName, resName, atomNum))
 
-                        self._min = np.minimum(atom[:3] - r, self._min)
-                        self._max = np.maximum(atom[:3] + r, self._max)
+                        # self._min = np.minimum(atom[:3] - r, self._min)
+                        # self._max = np.maximum(atom[:3] + r, self._max)
             else:
                 for line in lines:
                     if line.startswith("ATOM"):
@@ -83,8 +85,57 @@ class ChannelValuator:
                         atom    = np.array([x,y,z,r], dtype=np.float32)
                         self._protein.add_atoms((atom, atomName, resName, atomNum))
 
-                        self._min = np.minimum(atom[:3] - r, self._min)
-                        self._max = np.maximum(atom[:3] + r, self._max)
+                        # self._min = np.minimum(atom[:3] - r, self._min)
+                        # self._max = np.maximum(atom[:3] + r, self._max)
+
+    def inflate_protein(self, cutoffRatio):
+        import os, sys, platform
+
+        pdbFileName = self._;pdbFileName
+
+
+        libPath = os.getcwd() + "\\lib\\"
+        if platform.system() != 'Windows':
+            libPath = libPath.replace('\\', '/')
+
+        
+        import PyMGOS
+
+        if os.path.exists(pdbFileName.replace('.pdb', '.a.qtf')):
+            os.remove(pdbFileName.replace('.pdb', '.a.qtf'))
+
+        MG = PyMGOS.MolecularGeometry()
+
+        if includeHETATM:
+            MG.load(pdbFileName)
+        else:
+            MG.load_except_PDB_HETATM(pdbFileName)
+
+        MG.preprocess()
+
+        increaseRadius = 0.0
+        increaseStep = 0.5
+
+        numAllAtoms = MG.get_all_atoms().size()
+        LRboudnaryAtomSet = MG.find_boundary_atoms_in_Lee_Richards_model(increaseRadius)
+        while LRboudnaryAtomSet.size() > (numAllAtoms/cutoffRatio):
+            increaseRadius += increaseStep
+
+            LRboudnaryAtomSet = MG.find_boundary_atoms_in_Lee_Richards_model(increaseRadius)
+
+        print(numAllAtoms, LRboudnaryAtomSet.size(), increaseRadius)
+
+        LRboudnaryAtoms = []
+        for atom in LRboudnaryAtomSet:
+            sphere = atom.geometry()
+
+            x = sphere.center().x()
+            y = sphere.center().y()
+            z = sphere.center().z()
+            r = sphere.radius()
+
+            LRboudnaryAtoms.append((x, y, z, r+increaseRadius))            
+
 
     def set_grid(self, gridSize):
         from grid import Grid

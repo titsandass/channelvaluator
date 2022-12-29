@@ -1,9 +1,8 @@
-import numpy as np
-
 class Protein: 
-    def __init__(self):
-        self.name = None
+    def __init__(self, name=None):
+        self.name = name
         self.atoms = list()
+        # np.array([x,y,z,r], dtype=np.float32)
 
     def set_name(self, name):
         self.name = name
