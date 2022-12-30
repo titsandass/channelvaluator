@@ -202,30 +202,70 @@ class ChannelValuator:
                 vertex.check_intersection_with_inflated_atom(inflatedAtom)
 
     def _determine_interior_gridVertices(self):
-        x_planes = ( ':, 0, :', ' :, -1,  :' )
-        y_planes = ( ':, :, 0', ' :,  :, -1' )
-        z_planes = ( '0, :, :', '-1,  :,  :' )
+        # x_planes = [:, 0, :], [ :, -1,  :]
+        # y_planes = [:, :, 0], [ :,  :, -1]
+        # z_planes = [0, :, :], [-1,  :,  :]
 
         imax, jmax, kmax = self._grid._Vertices.shape
 
-        # X_PLANE
-        forwardPlane = x_planes[0]
-        
-        for i in range(imax):
-            for j in range(kmax):
-                for k in range(jmax):
+        #x_planes
+        self.__propagate_plane(range(imax), range(kmax), range(jmax))
+        self.__propagate_plane(range(imax), range(kmax), reversed(range(jmax)))
+
+        #y_planes
+        self.__propagate_plane(range(imax), range(jmax), range(kmax))
+        self.__propagate_plane(range(imax), range(jmax), reversed(range(kmax)))
+
+        #z_planes
+        self.__propagate_plane(range(jmax), range(kmax), range(imax))
+        self.__propagate_plane(range(jmax), range(kmax), reversed(range(imax)))
+
+    def __propagate_plane(self, i_range, j_range, k_range):
+        for i in i_range:
+            for j in j_range:
+                for k in k_range:
                     vertex = self._grid._Vertices[i,j,k].item()
-                    # if vertex.is_interior():
-                    #     continue
-                    # if vertex.is_boundary():
-                    #     vertex.set_interior
+                    if vertex.is_boundary():
+                        break
+                    else:
+                        if not vertex.is_interior():
+                            continue
+                        else:
+                            vertex.set_interior(False)
 
+###################################################################
+    def verify_atom_overlapping_vertices(self):
+        for atomInfo in self._protein.atoms:
+            includingGridVertices = self._grid.get_including_gridVertices_of(atomInfo)
+            for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
+                vertex = ivertex.item()
+                if not vertex.is_boundary():
+                    continue
 
+                if vertex.is_checked_atom():
+                    continue
+                else:
+                    vertex.check_intersection_with_atom(atomInfo)
 
+###################################################################
+    def verify_channel_overlapping_vertices(self):
+        for software in self._channels.keys():
+            for sphere in self._channels[software]['channel']._spheres:
+                includingGridVertices = self._grid.get_including_gridVertices_of((sphere,))
+                
+                if includingGridVertices.size == 0:
+                    raise NotImplementedError("Channel Sphere is not in the Grid")
+                
+                for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
+                    vertex = ivertex.item()
 
-
-
-        backwardPlane = x_planes[1]
-        backwardShape = backwardPlane.shape
+                    where = vertex.has_intersection_with_sphere(sphere)
+                    if where == 'Boundary':
+                        self._channels[software]['channel'].add_intersecting_vertex(vertex)
+                        self._channels[software]['channel'].add_boundary_vertex(vertex)
+                    elif where == 'Inside':
+                        self._channels[software]['channel'].add_intersecting_vertex(vertex)
+                    elif where == 'Outside':
+                        pass        
 
 

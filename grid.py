@@ -58,7 +58,7 @@ class Grid:
             self.checked_channel    = False
 
             self.boundary           = False
-            self.interior           = False
+            self.interior           = True
 
             # self.intersectingAtoms  = list()
             
