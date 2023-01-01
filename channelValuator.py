@@ -1,158 +1,82 @@
 from protein import Protein
 
-import os
 import numpy as np
+import os
 
 class ChannelValuator:
     def __init__(self):
         self._pdbFileName       = None
-        self._protein           = Protein()
+        self._protein           = None
+        self._inflatedAtoms     = None
         self._includeHETATM     = False
-        
         self._channelFilePaths  = None
         self._channels          = dict()
-        
-        self._min = np.array([np.inf, np.inf, np.inf]   , dtype=np.float32)
-        self._max = np.array([-np.inf, -np.inf, -np.inf], dtype=np.float32)
 
+        self._min               = np.array([np.inf, np.inf, np.inf]   , dtype=np.float16)
+        self._max               = np.array([-np.inf, -np.inf, -np.inf], dtype=np.float16)
+
+###################################################################    
     def set_protein(self, pdbFileName, includeHETATM):
-        from VDWradius import VDWRadius
-        import os
+        import platform
         
         if not os.path.exists(pdbFileName):
-            raise FileExistsError('No Protein File : {}'.format(pdbFileName))
-        
+            print('File Not Exists : {}'.format(pdbFileName))
+            return
+
         self._pdbFileName = pdbFileName
         self._includeHETATM = includeHETATM
-        with open(self._pdbFileName, 'r') as f:
-            # print("Protein file : {} Loaded.\n".format(proteinFilePath))
-
+        
+        proteinName = pdbFileName.split('\\')[-1].replace('.pdb','')
+        if platform.system() != 'Windows':
             proteinName = pdbFileName.split('/')[-1].replace('.pdb','')
-            self._protein.set_name(proteinName)
-            
-            lines = f.readlines()
+        self._protein = Protein(proteinName)
+
+        with open(pdbFileName, 'r') as pdbFile:
+            lines = pdbFile.readlines()
             if includeHETATM:
                 for line in lines:
                     if line.startswith("ATOM") or line.startswith("HETATM"):
-                        line = line.rstrip()
-
-                        atomName= line[-3:]
-                        atomNum = int(line[6:12])
-                        resName = line[17:20]
-
-                        x       = np.float32(line[30:38])
-                        y       = np.float32(line[38:46])
-                        z       = np.float32(line[46:52])
-                        
-                        try:
-                            r = VDWRadius[atomName.split()[-1].rjust(2,' ')]
-                        except:
-                            # raise BaseException('NO van der Waals radius : {}'.format(atomName))
-                            parsedAtomName = ''
-                            for char in atomName:
-                                if char.isalpha():  
-                                    parsedAtomName += char
-                            r = VDWRadius[parsedAtomName.split()[-1].rjust(2,' ')]
-                        
-                        atom    = np.array([x,y,z,r], dtype=np.float32)
-                        self._protein.add_atoms((atom, atomName, resName, atomNum))
-
-                        # self._min = np.minimum(atom[:3] - r, self._min)
-                        # self._max = np.maximum(atom[:3] + r, self._max)
+                        atomInfo = self._parse_line_into_atom(line)
+                        self._protein.add_atoms(atomInfo)
             else:
                 for line in lines:
                     if line.startswith("ATOM"):
-                        line = line.rstrip()
+                        atomInfo = self._parse_line_into_atom(line)
+                        self._protein.add_atoms(atomInfo)
 
-                        atomName= line[-3:]
-                        atomNum = int(line[6:12])
-                        resName = line[17:20]
+    def _parse_line_into_atom(self, line):
+        from VDWradius import VDWRadius
 
-                        x       = np.float32(line[30:38])
-                        y       = np.float32(line[38:46])
-                        z       = np.float32(line[46:52])
-                        
-                        try:
-                            r = VDWRadius[atomName.split()[-1].rjust(2,' ')]
-                        except:
-                            # raise BaseException('NO van der Waals radius : {}'.format(atomName))
-                            parsedAtomName = ''
-                            for char in atomName:
-                                if char.isalpha():
-                                    parsedAtomName += char
-                            r = VDWRadius[parsedAtomName.split()[-1].rjust(2,' ')]
-                        
-                        atom    = np.array([x,y,z,r], dtype=np.float32)
-                        self._protein.add_atoms((atom, atomName, resName, atomNum))
-
-                        # self._min = np.minimum(atom[:3] - r, self._min)
-                        # self._max = np.maximum(atom[:3] + r, self._max)
-
-    def inflate_protein(self, cutoffRatio):
-        import os, sys, platform
-
-        pdbFileName = self._;pdbFileName
-
-
-        libPath = os.getcwd() + "\\lib\\"
-        if platform.system() != 'Windows':
-            libPath = libPath.replace('\\', '/')
-
+        line = line.rstrip()
         
-        import PyMGOS
+        atomName= line[-3:]
+        atomNum = int(line[6:12])
+        resName = line[17:20]
 
-        if os.path.exists(pdbFileName.replace('.pdb', '.a.qtf')):
-            os.remove(pdbFileName.replace('.pdb', '.a.qtf'))
+        x       = np.float32(line[30:38])
+        y       = np.float32(line[38:46])
+        z       = np.float32(line[46:52])
 
-        MG = PyMGOS.MolecularGeometry()
+        try:
+            r = VDWRadius[atomName.split()[-1].rjust(2,' ')]
+        except:
+            parsedAtomName = ''
+            for char in atomName:
+                if char.isalpha():  
+                    parsedAtomName += char
+            r = VDWRadius[parsedAtomName.split()[-1].rjust(2,' ')]
 
-        if includeHETATM:
-            MG.load(pdbFileName)
-        else:
-            MG.load_except_PDB_HETATM(pdbFileName)
+        atom    = np.array([x,y,z,r], dtype=np.float32)
+        return (atom, atomName, resName, atomNum)
 
-        MG.preprocess()
-
-        increaseRadius = 0.0
-        increaseStep = 0.5
-
-        numAllAtoms = MG.get_all_atoms().size()
-        LRboudnaryAtomSet = MG.find_boundary_atoms_in_Lee_Richards_model(increaseRadius)
-        while LRboudnaryAtomSet.size() > (numAllAtoms/cutoffRatio):
-            increaseRadius += increaseStep
-
-            LRboudnaryAtomSet = MG.find_boundary_atoms_in_Lee_Richards_model(increaseRadius)
-
-        print(numAllAtoms, LRboudnaryAtomSet.size(), increaseRadius)
-
-        LRboudnaryAtoms = []
-        for atom in LRboudnaryAtomSet:
-            sphere = atom.geometry()
-
-            x = sphere.center().x()
-            y = sphere.center().y()
-            z = sphere.center().z()
-            r = sphere.radius()
-
-            LRboudnaryAtoms.append((x, y, z, r+increaseRadius))            
-
-
-    def set_grid(self, gridSize):
-        from grid import Grid
-                
-        self._gridSize = gridSize
-        self._grid = Grid(self._min, self._max, gridSize)
-        self._grid._split()
-
+###################################################################
     def set_channels(self, channelFilePaths):
         from channel import Channel
-        import os
-        
+
         self._channelFilePaths = channelFilePaths
         for software in channelFilePaths.keys():
             channelFilePath = channelFilePaths[software]
             if os.path.exists(channelFilePath):
-                # print("     Channel {} Loaded.".format(software))
                 self._channels[software] = {
                     'channel'           : Channel(software),
                     'TotalVertices'     : 0,
@@ -220,172 +144,290 @@ class ChannelValuator:
 
     def _parse_channel_3V(self, VVVchannelFilePath, channels):
         pass
-    
-    def find_ground_truth_grid(self, pdbFileName, includeHETATM, cutoffRatio):
-        self._define_surface_grids(pdbFileName, includeHETATM, cutoffRatio)
-        
 
-    def _define_surface_grids(self, pdbFileName, includeHETATM, cutoffRatio):
-        import os, sys, platform
 
+###################################################################
+    def inflate_protein(self, cutoffRatio, initialIncrement, step):
+        import sys, platform
         libPath = os.getcwd() + "\\lib\\"
         if platform.system() != 'Windows':
             libPath = libPath.replace('\\', '/')
-
         sys.path.insert(0, libPath)
         import PyMGOS
-
-        if os.path.exists(pdbFileName.replace('.pdb', '.a.qtf')):
-            os.remove(pdbFileName.replace('.pdb', '.a.qtf'))
+        
+        if os.path.exists(self._pdbFileName.replace('.pdb', '.a.qtf')):
+            os.remove(self._pdbFileName.replace('.pdb', '.a.qtf'))
 
         MG = PyMGOS.MolecularGeometry()
-
-        if includeHETATM:
-            MG.load(pdbFileName)
+        if self._includeHETATM:
+            MG.load(self._pdbFileName)
         else:
-            MG.load_except_PDB_HETATM(pdbFileName)
-
+            MG.load_except_PDB_HETATM(self._pdbFileName)            
         MG.preprocess()
 
-        increaseRadius = 0.0
-        increaseStep = 0.5
-
         numAllAtoms = MG.get_all_atoms().size()
-        LRboudnaryAtomSet = MG.find_boundary_atoms_in_Lee_Richards_model(increaseRadius)
+        LRboudnaryAtomSet = MG.find_boundary_atoms_in_Lee_Richards_model(initialIncrement)
         while LRboudnaryAtomSet.size() > (numAllAtoms/cutoffRatio):
-            increaseRadius += increaseStep
+            initialIncrement += step
+            LRboudnaryAtomSet = MG.find_boundary_atoms_in_Lee_Richards_model(initialIncrement)
+        print('\t', numAllAtoms, LRboudnaryAtomSet.size(), initialIncrement)
 
-            LRboudnaryAtomSet = MG.find_boundary_atoms_in_Lee_Richards_model(increaseRadius)
-
-        print(numAllAtoms, LRboudnaryAtomSet.size(), increaseRadius)
-
-        LRboudnaryAtoms = []
+        self._inflatedAtoms = Protein()
         for atom in LRboudnaryAtomSet:
             sphere = atom.geometry()
-
             x = sphere.center().x()
             y = sphere.center().y()
             z = sphere.center().z()
-            r = sphere.radius()
+            r = sphere.radius() + initialIncrement
+            atom = np.array([x,y,z,r], dtype=np.float16)
 
-            LRboudnaryAtoms.append((x, y, z, r+increaseRadius))
+            self._inflatedAtoms.add_atoms((atom,))
 
-        # resultFileName = pdbFileName.replace('.pdb', '_spheres_{}.py'.format(increaseRadius))
-        # self._spheres_2_pymol_script(LRboudnaryAtoms, resultFileName, increaseRadius)
+            self._min = np.minimum(atom[:3] - r, self._min)
+            self._max = np.maximum(atom[:3] + r, self._max)
 
-        for sphere in LRboudnaryAtoms:
-            includingGridVertices = self._grid.get_including_gridVertices_of((sphere,))
-            
+###################################################################        
+    def set_grid(self, gridSize):
+        from grid import Grid
+
+        self._gridSize = gridSize
+        self._grid = Grid(self._min, self._max, gridSize)
+        self._grid._split()
+
+###################################################################
+    def set_ground_truth(self):
+        self._set_boundary_gridVertices()
+        self._determine_interior_gridVertices()
+
+    def _set_boundary_gridVertices(self):
+        for inflatedAtom in self._inflatedAtoms.atoms:
+            includingGridVertices = self._grid.get_including_gridVertices_of(inflatedAtom)
             for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
                 vertex = ivertex.item()
-                vertex.check_intersection_with_increased_sphere(sphere)
+                if vertex.is_boundary():
+                    continue
+                vertex.check_intersection_with_inflated_atom(inflatedAtom)
 
-    def _define_interior_vertices(self):
-        self._grid
+    def _determine_interior_gridVertices(self):
+        # x_planes = [:, 0, :], [ :, -1,  :]
+        # y_planes = [:, :, 0], [ :,  :, -1]
+        # z_planes = [0, :, :], [-1,  :,  :]
 
+        imax, jmax, kmax = self._grid._Vertices.shape
 
-    def _spheres_2_pymol_script(spheres, resultFileName, increaseRadius):
-        with open(resultFileName, 'w') as f:
-            f.writelines('''
-    from pymol.cgo import *
-    from pymol import cmd
+        print('\tpropagating..x_planes')
+        self.__propagate_plane(range(imax), range(jmax), range(kmax), 1)
+        self.__propagate_plane(range(imax), reversed(range(jmax)), range(kmax), 1)
 
-    spheres = [
-        COLOR, 1.0, 1.0, 1.0,
-    ''')
+        print('\tpropagating..y_planes')
+        self.__propagate_plane(range(imax), range(jmax), range(kmax), 2)
+        self.__propagate_plane(range(imax), range(jmax), reversed(range(kmax)), 2)
 
-            for x,y,z,r in spheres:
-                f.writelines('''    SPHERE, {}, {}, {}, {},\n'''.format(x,y,z,r))
+        print('\tpropagating..z_planes')
+        self.__propagate_plane(range(imax), range(jmax), range(kmax), 0)
+        self.__propagate_plane(reversed(range(imax)), range(jmax), range(kmax), 0)
 
-            f.writelines('''    ]
-
-    cmd.load_cgo(spheres, 'spheres_{}', 1)'''.format(increaseRadius))
-
-    def check_intersection_with_atoms(self):
-        for atom in self._protein.atoms:
-            includingGridVertices = self._grid.get_including_gridVertices_of(atom)
+    def __propagate_plane(self, i_range, j_range, k_range, ijk):
+        if ijk == 0:
+            ranges = (j_range, k_range, i_range)
+        elif ijk == 1:
+            ranges = (i_range, k_range, j_range)
+        else:
+            ranges = (i_range, j_range, k_range)
             
+        for i in ranges[0]:
+            for j in ranges[1]:
+                for k in ranges[2]:
+                    if ijk == 0:
+                        index = (k,i,j)
+                    elif ijk == 1:
+                        index = (i,k,j)
+                    else:
+                        index = (i,j,k)
+                        
+                    vertex = self._grid._Vertices[index]
+                    if vertex.is_boundary():
+                        break
+                    else:
+                        if not vertex.is_interior():
+                            continue
+                        else:
+                            vertex.set_interior(False)
+
+###################################################################
+    def verify_atom_overlapping_vertices(self):
+        for atomInfo in self._protein.atoms:
+            includingGridVertices = self._grid.get_including_gridVertices_of(atomInfo)
             for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
                 vertex = ivertex.item()
-                vertex.check_intersection_with_atom(atom)
+                if not vertex.is_boundary():
+                    continue
 
-    def check_intersection_with_channels(self):
+                if vertex.is_checked_atom():
+                    continue
+                else:
+                    vertex.check_intersection_with_atom(atomInfo)
+
+###################################################################
+    def verify_channel_overlapping_vertices(self):
         for software in self._channels.keys():
             for sphere in self._channels[software]['channel']._spheres:
                 includingGridVertices = self._grid.get_including_gridVertices_of((sphere,))
                 
                 if includingGridVertices.size == 0:
-                    continue
+                    raise NotImplementedError("Channel Sphere is not in the Grid")
                 
                 for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
                     vertex = ivertex.item()
 
-                    where = vertex.has_intersection_with_sphere(sphere)
-                    if where == 'Boundary':
+                    inside = vertex.has_intersection_with_sphere(sphere)
+                    if inside:
                         self._channels[software]['channel'].add_intersecting_vertex(vertex)
-                        self._channels[software]['channel'].add_boundary_vertex(vertex)
-                    elif where == 'Inside':
-                        self._channels[software]['channel'].add_intersecting_vertex(vertex)
-                    elif where == 'Outside':
-                        pass
-                
+                        if vertex.is_checked_atom():
+                            self._channels[software]['channel'].add_buried_vertex(vertex)
+                    else:
+                        pass        
 
-    def validate_channel(self, includeWater):
-        for software in self._channels.keys():
-            self._channels[software]['TotalVertices'] = len(self._channels[software]['channel']._intersectingVertices)
+    # def validate_channel(self):
+    #     for software in self._channels.keys():
+    #         self._channels[software]['TotalVertices'] = len(self._channels[software]['channel']._intersectingVertices)
+    #         for ivertex in self._channels[software]['channel']._intersectingVertices:
+    #             vertex = ivertex.item()
+    #             if len(vertex.intersectingAtoms) > 0:
+    #                 self._channels[software]['BuriedVertices'] += 1
+    #             else:
+    #                 self._channels[software]['RevealedVertices'] += 1
 
-            for vertex in self._channels[software]['channel']._intersectingVertices:
-                # vertex = ivertex.item()
-                if len(vertex.intersectingAtoms) > 0:
-                    self._channels[software]['BuriedVertices'] += 1
-                else:
-                    self._channels[software]['RevealedVertices'] += 1
-
-    def write_results(self, resultFilePath):
-        with open(resultFilePath, 'w') as f:
-            for software in self._channels.keys():
-                f.writelines('''
-    Software        :   {}
-    TotalVolume     :   {}
-    BuriedVertices  :   {}
-    BoundaryVertices:   {}
-    RevealedVertices:   {}
-
-        '''.format(
-                software,
-                self._channels[software]['TotalVertices'],
-                self._channels[software]['BuriedVertices'],
-                len(self._channels[software]['channel']._boundaryVertices),
-                self._channels[software]['RevealedVertices'])
-                )
-            
-           
-    def write_PyMOL_script(self, pyMOLScriptFile, includeWater):
-        radius = 0.15
-        with open(pyMOLScriptFile, 'w') as f:
-            f.writelines(
-'''
-from pymol.cgo import *
+###################################################################
+    def write_result_in_PyMOL_script(self, resultFileName):
+        with open(resultFileName, 'w') as f:
+            f.writelines('''from pymol.cgo import *
 from pymol import cmd
 import os
 view = cmd.get_view()     
-'''
-            )
-            for software in self._channels.keys():
-                RevealedVertices    = ['RevealedVertices_{} = [\n'.format(software), '\tCOLOR, 1.000000, 1.000000, 1.000000,\n']
-                BuriedVertices      = ['BuriedVertices_{} = [\n'.format(software),   '\tCOLOR, 0.000000, 0.000000, 1.000000,\n']
-                for vertex in self._channels[software]['channel']._intersectingVertices:
-                    if len(vertex.intersectingAtoms) > 0:
-                        BuriedVertices.append('\tSPHERE, {}, {}, {}, {},\n'.format(vertex.point[0], vertex.point[1], vertex.point[2], radius))
-                    else:
-                        RevealedVertices.append('\tSPHERE, {}, {}, {}, {},\n'.format(vertex.point[0], vertex.point[1], vertex.point[2], radius*1.5))
-                BuriedVertices.append(']\n')
-                RevealedVertices.append(']\n')
+''')        
+            
+            f.writelines('''
+bounding_box = [
+\tALPHA, {},
+\tCOLOR, 0.700000, 0.700000, 0.700000,
+\tBEGIN, TRIANGLE_STRIP,
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tEND,
+\t
+\tBEGIN, TRIANGLE_STRIP,
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tEND,
+\t
+\tBEGIN, TRIANGLE_STRIP,
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tEND,
+\t
+\tBEGIN, TRIANGLE_STRIP,
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tEND,
+\t
+\tBEGIN, TRIANGLE_STRIP,
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tEND,
+\t
+\tBEGIN, TRIANGLE_STRIP,
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tVERTEX, {}, {}, {},
+\tEND,                     
+]
+cmd.load_cgo(bounding_box, 'bounding_box')\n\n'''.format(0.5,
+        self._min[0], self._min[1], self._min[2],
+        self._max[0], self._min[1], self._min[2],
+        self._max[0], self._max[1], self._min[2],
+        self._min[0], self._max[1], self._min[2],
+        
+        self._min[0], self._min[1], self._max[2],
+        self._max[0], self._min[1], self._max[2],
+        self._max[0], self._max[1], self._max[2],
+        self._min[0], self._max[1], self._max[2],
+        
+        self._min[0], self._min[1], self._min[2],
+        self._max[0], self._min[1], self._min[2],
+        self._max[0], self._min[1], self._max[2],
+        self._min[0], self._min[1], self._max[2],  
+              
+        self._min[0], self._max[1], self._min[2],
+        self._max[0], self._max[1], self._min[2],
+        self._max[0], self._max[1], self._max[2],
+        self._min[0], self._max[1], self._max[2], 
+          
+        self._min[0], self._min[1], self._min[2],
+        self._min[0], self._min[1], self._max[2],
+        self._min[0], self._max[1], self._max[2],
+        self._min[0], self._max[1], self._min[2],  
+              
+        self._max[0], self._min[1], self._min[2],
+        self._max[0], self._min[1], self._max[2],
+        self._max[0], self._max[1], self._max[2],
+        self._max[0], self._max[1], self._min[2],           
+            ))
+
+            gridVertexRadius = 0.15
+            text = '''ground_truth = [
+\tCOLOR, 1.000000, 1.000000, 1.000000,\n'''
+            for ivertex in np.nditer(self._grid._Vertices, flags=['refs_ok']):
+                vertex = ivertex.item()
+                if vertex.is_interior():
+                    text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.x, vertex.y, vertex.z, gridVertexRadius)
+            text += ''']
+cmd.load_cgo(ground_truth, 'ground_truth')\n\n'''
+            f.writelines(text)
+
+            channelVertexRadius = 0.15
+            text = '''channel_vertices = [
+\tCOLOR, 1.000000, 0.000000, 0.000000,\n'''
+            intersectingVertices = self._channels['MGOS']['channel']._intersectingVertices
+            for vertex in intersectingVertices:
+                text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.x, vertex.y, vertex.z, channelVertexRadius)
+            text += ''']
+cmd.load_cgo(channel_vertices, 'channel_vertices')\n\n'''
+            f.writelines(text)
                 
-                f.write(''.join(BuriedVertices))
-                f.write("cmd.load_cgo(BuriedVertices_{}, 'BuriedVertices_{}')\n".format(software, software))
-                f.write(''.join(RevealedVertices))  
-                f.write("cmd.load_cgo(RevealedVertices_{}, 'RevealedVertices_{}')\n".format(software, software))
-                
-                f.write("cmd.group('{}','BuriedVertices_{}', 'add')\n".format(software, software))
-                f.write("cmd.group('{}','RevealedVertices_{}', 'add')\n".format(software, software))
+            text = '''buried_vertices = [
+\tCOLOR, 0.000000, 1.000000, 0.000000,\n'''                
+            buriedVertices = self._channels['MGOS']['channel']._buriedVertices
+            for vertex in buriedVertices:
+                text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.x, vertex.y, vertex.z, channelVertexRadius)        
+            text += ''']
+cmd.load_cgo(buried_vertices, 'buried_vertices')\n\n'''                        
+            f.writelines(text)
+            
+            f.writelines('''
+cmd.fetch('2OBI')
+
+cmd.group('result_{}', '2OBI', 'add')                       
+cmd.group('result_{}', 'bounding_box', 'add')
+cmd.group('result_{}', 'ground_truth', 'add') 
+cmd.group('result_{}', 'channel_vertices', 'add') 
+cmd.group('result_{}', 'buried_vertices', 'add') 
+
+cmd.set_view(view)
+'''.format(self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name))
+            
+        
+            
+            
+            

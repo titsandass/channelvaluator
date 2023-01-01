@@ -52,16 +52,12 @@ class Grid:
         def __init__(self, point):
             self.point              = point
 
-            self.ground_truth       = False
-
             self.checked_atom       = False
             self.checked_channel    = False
 
             self.boundary           = False
             self.interior           = True
-
-            # self.intersectingAtoms  = list()
-            
+                        
         @property
         def x(self):
             return self.point[0]
@@ -103,15 +99,12 @@ class Grid:
 
             dist = np.linalg.norm(self.point - center)
 
-            if np.absolute(dist - radii) < 1e-6:
-                return 'Boundary'
-            elif dist < radii:
-                return 'Inside'
+            if dist < radii:
+                return True
             else:
-                return 'Outside'
+                return False
 
-        def set_ground_truth(self, checked:bool):
-            self.ground_truth = checked
+
 
         def set_checked_atom(self, checked:bool):
             self.checked_atom = checked
@@ -126,8 +119,6 @@ class Grid:
             self.interior = checked
         
 
-        def is_ground_truth(self):
-            return self.ground_truth
 
         def is_checked_atom(self):
             return self.checked_atom
