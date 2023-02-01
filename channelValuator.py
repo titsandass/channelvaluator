@@ -209,50 +209,46 @@ class ChannelValuator:
                 vertex.check_intersection_with_inflated_atom(inflatedAtom)
 
     def _determine_interior_gridVertices(self):
-        # x_planes = [:, 0, :], [ :, -1,  :]
-        # y_planes = [:, :, 0], [ :,  :, -1]
-        # z_planes = [0, :, :], [-1,  :,  :]
-
         imax, jmax, kmax = self._grid._Vertices.shape
 
-        print('\tpropagating..x_planes')
-        self.__propagate_plane(range(imax), range(jmax), range(kmax), 1)
-        self.__propagate_plane(range(imax), reversed(range(jmax)), range(kmax), 1)
-
-        print('\tpropagating..y_planes')
-        self.__propagate_plane(range(imax), range(jmax), range(kmax), 2)
-        self.__propagate_plane(range(imax), range(jmax), reversed(range(kmax)), 2)
-
-        print('\tpropagating..z_planes')
+        print('\tpropagating..x_dir')
         self.__propagate_plane(range(imax), range(jmax), range(kmax), 0)
         self.__propagate_plane(reversed(range(imax)), range(jmax), range(kmax), 0)
 
+        print('\tpropagating..y_dir')
+        self.__propagate_plane(range(imax), range(jmax), range(kmax), 1)
+        self.__propagate_plane(range(imax), reversed(range(jmax)), range(kmax), 1)        
+        
+        print('\tpropagating..z_dir')
+        self.__propagate_plane(range(imax), range(jmax), range(kmax), 2)
+        self.__propagate_plane(range(imax), range(jmax), reversed(range(kmax)), 2)
+
     def __propagate_plane(self, i_range, j_range, k_range, ijk):
-        if ijk == 0:
-            ranges = (j_range, k_range, i_range)
+        if   ijk == 0:
+            ranges = (k_range, j_range, i_range)
         elif ijk == 1:
             ranges = (i_range, k_range, j_range)
-        else:
-            ranges = (i_range, j_range, k_range)
+        elif ijk == 2:
+            ranges = (j_range, i_range, k_range)
             
         for i in ranges[0]:
             for j in ranges[1]:
                 for k in ranges[2]:
-                    if ijk == 0:
-                        index = (k,i,j)
+                    if   ijk == 0:
+                        index = (k,j,i)
                     elif ijk == 1:
                         index = (i,k,j)
-                    else:
-                        index = (i,j,k)
+                    elif ijk == 2:
+                        index = (j,i,k)
                         
                     vertex = self._grid._Vertices[index]
                     if vertex.is_boundary():
                         break
                     else:
-                        if not vertex.is_interior():
-                            continue
-                        else:
+                        if vertex.is_interior():
                             vertex.set_interior(False)
+                        else:
+                            continue
 
 ###################################################################
     def verify_atom_overlapping_vertices(self):
@@ -275,7 +271,8 @@ class ChannelValuator:
                 includingGridVertices = self._grid.get_including_gridVertices_of((sphere,))
                 
                 if includingGridVertices.size == 0:
-                    raise NotImplementedError("Channel Sphere is not in the Grid")
+                    # raise NotImplementedError("Channel Sphere is not in the Grid")
+                    continue
                 
                 for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
                     vertex = ivertex.item()
@@ -307,83 +304,83 @@ import os
 view = cmd.get_view()     
 ''')        
             
-            f.writelines('''
-bounding_box = [
-\tALPHA, {},
-\tCOLOR, 0.700000, 0.700000, 0.700000,
-\tBEGIN, TRIANGLE_STRIP,
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tEND,
-\t
-\tBEGIN, TRIANGLE_STRIP,
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tEND,
-\t
-\tBEGIN, TRIANGLE_STRIP,
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tEND,
-\t
-\tBEGIN, TRIANGLE_STRIP,
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tEND,
-\t
-\tBEGIN, TRIANGLE_STRIP,
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tEND,
-\t
-\tBEGIN, TRIANGLE_STRIP,
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tVERTEX, {}, {}, {},
-\tEND,                     
-]
-cmd.load_cgo(bounding_box, 'bounding_box')\n\n'''.format(0.5,
-        self._min[0], self._min[1], self._min[2],
-        self._max[0], self._min[1], self._min[2],
-        self._max[0], self._max[1], self._min[2],
-        self._min[0], self._max[1], self._min[2],
+#             f.writelines('''
+# bounding_box = [
+# \tALPHA, {},
+# \tCOLOR, 0.700000, 0.700000, 0.700000,
+# \tBEGIN, TRIANGLE_STRIP,
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tEND,
+# \t
+# \tBEGIN, TRIANGLE_STRIP,
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tEND,
+# \t
+# \tBEGIN, TRIANGLE_STRIP,
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tEND,
+# \t
+# \tBEGIN, TRIANGLE_STRIP,
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tEND,
+# \t
+# \tBEGIN, TRIANGLE_STRIP,
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tEND,
+# \t
+# \tBEGIN, TRIANGLE_STRIP,
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tVERTEX, {}, {}, {},
+# \tEND,                     
+# ]
+# cmd.load_cgo(bounding_box, 'bounding_box')\n\n'''.format(0.5,
+#         self._min[0], self._min[1], self._min[2],
+#         self._max[0], self._min[1], self._min[2],
+#         self._max[0], self._max[1], self._min[2],
+#         self._min[0], self._max[1], self._min[2],
         
-        self._min[0], self._min[1], self._max[2],
-        self._max[0], self._min[1], self._max[2],
-        self._max[0], self._max[1], self._max[2],
-        self._min[0], self._max[1], self._max[2],
+#         self._min[0], self._min[1], self._max[2],
+#         self._max[0], self._min[1], self._max[2],
+#         self._max[0], self._max[1], self._max[2],
+#         self._min[0], self._max[1], self._max[2],
         
-        self._min[0], self._min[1], self._min[2],
-        self._max[0], self._min[1], self._min[2],
-        self._max[0], self._min[1], self._max[2],
-        self._min[0], self._min[1], self._max[2],  
+#         self._min[0], self._min[1], self._min[2],
+#         self._max[0], self._min[1], self._min[2],
+#         self._max[0], self._min[1], self._max[2],
+#         self._min[0], self._min[1], self._max[2],  
               
-        self._min[0], self._max[1], self._min[2],
-        self._max[0], self._max[1], self._min[2],
-        self._max[0], self._max[1], self._max[2],
-        self._min[0], self._max[1], self._max[2], 
+#         self._min[0], self._max[1], self._min[2],
+#         self._max[0], self._max[1], self._min[2],
+#         self._max[0], self._max[1], self._max[2],
+#         self._min[0], self._max[1], self._max[2], 
           
-        self._min[0], self._min[1], self._min[2],
-        self._min[0], self._min[1], self._max[2],
-        self._min[0], self._max[1], self._max[2],
-        self._min[0], self._max[1], self._min[2],  
+#         self._min[0], self._min[1], self._min[2],
+#         self._min[0], self._min[1], self._max[2],
+#         self._min[0], self._max[1], self._max[2],
+#         self._min[0], self._max[1], self._min[2],  
               
-        self._max[0], self._min[1], self._min[2],
-        self._max[0], self._min[1], self._max[2],
-        self._max[0], self._max[1], self._max[2],
-        self._max[0], self._max[1], self._min[2],           
-            ))
+#         self._max[0], self._min[1], self._min[2],
+#         self._max[0], self._min[1], self._max[2],
+#         self._max[0], self._max[1], self._max[2],
+#         self._max[0], self._max[1], self._min[2],           
+#             ))
 
             gridVertexRadius = 0.15
             text = '''ground_truth = [
