@@ -7,8 +7,8 @@ class Grid:
         self._minPt     = minPt
         self._maxPt     = maxPt
         
-        self._bottomleft= np.floor(self._minPt / gridSize) * gridSize
-        self._topright  = np.ceil( self._maxPt / gridSize) * gridSize
+        self._bottomleft= np.floor(self._minPt / gridSize - 1) * gridSize
+        self._topright  = np.ceil( self._maxPt / gridSize + 1) * gridSize
         
         self._numX, self._numY, self._numZ = ((self._topright - self._bottomleft) / gridSize).astype(np.int32) + 1
 
@@ -19,7 +19,7 @@ class Grid:
         for i in range(self._numX):
             for j in range(self._numY):
                 for k in range(self._numZ):
-                    point = self._bottomleft + (i*self._gridSize, j*self._gridSize, k*self._gridSize)
+                    point = self._bottomleft + ((i+1)*self._gridSize, (j+1)*self._gridSize, (k+1)*self._gridSize)
                     self._Vertices[i][j][k] = self._GridVertex(point)
 
     def get_including_gridVertices_of(self, atomORSphere):

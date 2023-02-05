@@ -1,4 +1,5 @@
 import os, sys, platform
+import time
 
 from channelValuator import ChannelValuator
 
@@ -20,7 +21,7 @@ channelFilePaths    = {
 includeHETATM       = False
 cutoffRatio         = 3
 initialIncrement    = 0
-step                = 0.5
+step                = 0.2
 gridSize            = 0.5
 
 CV = ChannelValuator()

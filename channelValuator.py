@@ -211,17 +211,21 @@ class ChannelValuator:
     def _determine_interior_gridVertices(self):
         imax, jmax, kmax = self._grid._Vertices.shape
 
-        print('\tpropagating..x_dir')
+        print('\t propagating..x_dir')
         self.__propagate_plane(range(imax), range(jmax), range(kmax), 0)
-        self.__propagate_plane(reversed(range(imax)), range(jmax), range(kmax), 0)
+        # self.__propagate_plane(reversed(range(imax)), range(jmax), range(kmax), 0)
+        self.__propagate_plane(range(imax-1, -1, -1), range(jmax), range(kmax), 0)
 
-        print('\tpropagating..y_dir')
+        print('\t propagating..y_dir')
         self.__propagate_plane(range(imax), range(jmax), range(kmax), 1)
-        self.__propagate_plane(range(imax), reversed(range(jmax)), range(kmax), 1)        
+        # self.__propagate_plane(range(imax), reversed(range(jmax)), range(kmax), 1)        
+        self.__propagate_plane(range(imax), range(jmax-1, -1, -1), range(kmax), 1)        
         
-        print('\tpropagating..z_dir')
+        print('\t propagating..z_dir')
         self.__propagate_plane(range(imax), range(jmax), range(kmax), 2)
-        self.__propagate_plane(range(imax), range(jmax), reversed(range(kmax)), 2)
+        # self.__propagate_plane(range(imax), range(jmax), reversed(range(kmax)), 2)
+        self.__propagate_plane(range(imax), range(jmax), range(kmax-1, -1, -1), 2)
+
 
     def __propagate_plane(self, i_range, j_range, k_range, ijk):
         if   ijk == 0:
@@ -301,86 +305,52 @@ class ChannelValuator:
             f.writelines('''from pymol.cgo import *
 from pymol import cmd
 import os
+
+cmd.fetch('2OBI')
 view = cmd.get_view()     
 ''')        
             
-#             f.writelines('''
-# bounding_box = [
-# \tALPHA, {},
-# \tCOLOR, 0.700000, 0.700000, 0.700000,
-# \tBEGIN, TRIANGLE_STRIP,
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tEND,
-# \t
-# \tBEGIN, TRIANGLE_STRIP,
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tEND,
-# \t
-# \tBEGIN, TRIANGLE_STRIP,
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tEND,
-# \t
-# \tBEGIN, TRIANGLE_STRIP,
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tEND,
-# \t
-# \tBEGIN, TRIANGLE_STRIP,
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tEND,
-# \t
-# \tBEGIN, TRIANGLE_STRIP,
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tVERTEX, {}, {}, {},
-# \tEND,                     
-# ]
-# cmd.load_cgo(bounding_box, 'bounding_box')\n\n'''.format(0.5,
-#         self._min[0], self._min[1], self._min[2],
-#         self._max[0], self._min[1], self._min[2],
-#         self._max[0], self._max[1], self._min[2],
-#         self._min[0], self._max[1], self._min[2],
-        
-#         self._min[0], self._min[1], self._max[2],
-#         self._max[0], self._min[1], self._max[2],
-#         self._max[0], self._max[1], self._max[2],
-#         self._min[0], self._max[1], self._max[2],
-        
-#         self._min[0], self._min[1], self._min[2],
-#         self._max[0], self._min[1], self._min[2],
-#         self._max[0], self._min[1], self._max[2],
-#         self._min[0], self._min[1], self._max[2],  
-              
-#         self._min[0], self._max[1], self._min[2],
-#         self._max[0], self._max[1], self._min[2],
-#         self._max[0], self._max[1], self._max[2],
-#         self._min[0], self._max[1], self._max[2], 
-          
-#         self._min[0], self._min[1], self._min[2],
-#         self._min[0], self._min[1], self._max[2],
-#         self._min[0], self._max[1], self._max[2],
-#         self._min[0], self._max[1], self._min[2],  
-              
-#         self._max[0], self._min[1], self._min[2],
-#         self._max[0], self._min[1], self._max[2],
-#         self._max[0], self._max[1], self._max[2],
-#         self._max[0], self._max[1], self._min[2],           
-#             ))
+            f.writelines('''
+bounding_box = [
+\tALPHA, {},
+
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+\tCYLINDER, {}, {}, {}, {}, {}, {}, 0.1, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000, 0.700000,
+]
+cmd.load_cgo(bounding_box, 'bounding_box')\n\n'''.format(0.5,
+        self._min[0], self._min[1], self._min[2], self._max[0], self._min[1], self._min[2],
+        self._max[0], self._min[1], self._min[2], self._max[0], self._max[1], self._min[2],
+        self._max[0], self._max[1], self._min[2], self._min[0], self._max[1], self._min[2],
+        self._min[0], self._max[1], self._min[2], self._min[0], self._min[1], self._min[2],
+
+        self._min[0], self._min[1], self._min[2], self._min[0], self._min[1], self._max[2],
+        self._max[0], self._min[1], self._min[2], self._max[0], self._min[1], self._max[2],
+        self._max[0], self._max[1], self._min[2], self._max[0], self._max[1], self._max[2],
+        self._min[0], self._max[1], self._min[2], self._min[0], self._max[1], self._max[2],
+
+        self._min[0], self._min[1], self._max[2], self._max[0], self._min[1], self._max[2],
+        self._max[0], self._min[1], self._max[2], self._max[0], self._max[1], self._max[2],
+        self._max[0], self._max[1], self._max[2], self._min[0], self._max[1], self._max[2],
+        self._min[0], self._max[1], self._max[2], self._min[0], self._min[1], self._max[2],
+            ))
+
+            text = '''inflated_atoms = [
+\tCOLOR, 0.000000, 1.000000, 0.000000,\n'''
+            for inflatedAtom in self._inflatedAtoms.atoms:
+                text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(inflatedAtom[0][0], inflatedAtom[0][1], inflatedAtom[0][2], inflatedAtom[0][3])           
+            text += ''']
+cmd.load_cgo(inflated_atoms, 'inflated_atoms')\n\n'''
+            f.writelines(text)
 
             gridVertexRadius = 0.15
             text = '''ground_truth = [
@@ -388,7 +358,7 @@ view = cmd.get_view()
             for ivertex in np.nditer(self._grid._Vertices, flags=['refs_ok']):
                 vertex = ivertex.item()
                 if vertex.is_interior():
-                    text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.x, vertex.y, vertex.z, gridVertexRadius)
+                    text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.point[0], vertex.point[1], vertex.point[2], gridVertexRadius)
             text += ''']
 cmd.load_cgo(ground_truth, 'ground_truth')\n\n'''
             f.writelines(text)
@@ -398,7 +368,7 @@ cmd.load_cgo(ground_truth, 'ground_truth')\n\n'''
 \tCOLOR, 1.000000, 0.000000, 0.000000,\n'''
             intersectingVertices = self._channels['MGOS']['channel']._intersectingVertices
             for vertex in intersectingVertices:
-                text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.x, vertex.y, vertex.z, channelVertexRadius)
+                text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.point[0], vertex.point[1], vertex.point[2], channelVertexRadius)
             text += ''']
 cmd.load_cgo(channel_vertices, 'channel_vertices')\n\n'''
             f.writelines(text)
@@ -407,22 +377,22 @@ cmd.load_cgo(channel_vertices, 'channel_vertices')\n\n'''
 \tCOLOR, 0.000000, 1.000000, 0.000000,\n'''                
             buriedVertices = self._channels['MGOS']['channel']._buriedVertices
             for vertex in buriedVertices:
-                text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.x, vertex.y, vertex.z, channelVertexRadius)        
+                text += '''\tSPHERE, {}, {}, {}, {},\n'''.format(vertex.point[0], vertex.point[1], vertex.point[2], channelVertexRadius)        
             text += ''']
 cmd.load_cgo(buried_vertices, 'buried_vertices')\n\n'''                        
             f.writelines(text)
             
             f.writelines('''
-cmd.fetch('2OBI')
 
 cmd.group('result_{}', '2OBI', 'add')                       
 cmd.group('result_{}', 'bounding_box', 'add')
+cmd.group('result_{}', 'inflated_atoms', 'add')
 cmd.group('result_{}', 'ground_truth', 'add') 
 cmd.group('result_{}', 'channel_vertices', 'add') 
 cmd.group('result_{}', 'buried_vertices', 'add') 
 
 cmd.set_view(view)
-'''.format(self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name))
+'''.format(self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name))
             
         
             
