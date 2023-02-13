@@ -1,0 +1,45 @@
+# Tunnel-lining resiudes (residues wihtin the 3.0 A distnace from individual tunnels)
+# Column content
+# C:     chain
+# res:   residue index in PDB file
+# AA:    amino acid
+# N:     number of snapshots in which the residue lined the tunnel
+# sideN: same as N, but backbone atoms are not counted (those named H, N, C, O, CA or HA)
+# atoms: tunnel-lining atoms. Format is <number of snapshots>:<atom name>_<atom serial number>
+#
+== Tunnel cluster 1 ==
+# C    res  AA       N   sideN atoms
+  B     15 ILE       1       1 1:C_4136 1:O_4137 1:CG2_4140 
+  B     19 LEU       1       1 1:CA_4162 1:CB_4165 1:CG_4166 1:CD1_4167 1:CD2_4168 
+  B     23 MET       1       1 1:CE_4201 
+  B    138 PHE       1       1 1:N_5088 1:CA_5089 1:C_5090 1:O_5091 1:CB_5092 1:CG_5093 1:CD1_5094 1:CD2_5095 1:CE1_5096 1:CE2_5097 1:CZ_5098 
+  B    142 LEU       1       1 1:CB_5123 1:CG_5124 1:CD1_5125 1:CD2_5126 
+  B    168 PHE       1       1 1:CD1_5338 1:CD2_5339 1:CE1_5340 1:CE2_5341 1:CZ_5342 
+  B    171 LEU       1       1 1:C_5360 1:CD2_5365 
+  B    172 CYS       1       1 1:N_5366 1:CA_5367 1:C_5368 1:O_5369 1:CB_5370 1:SG_5371 
+  B    175 LEU       1       1 1:CA_5385 1:C_5386 1:CB_5388 1:CG_5389 1:CD1_5390 1:CD2_5391 
+  B    176 SER       1       1 1:N_5392 1:CA_5393 1:CB_5396 1:OG_5397 
+  B    179 MET       1       1 1:CG_5415 1:SD_5416 1:CE_5417 
+  B    215 PHE       1       1 1:CA_5686 1:C_5687 1:O_5688 1:CB_5689 1:CG_5690 1:CD1_5691 1:CD2_5692 1:CE1_5693 1:CE2_5694 1:CZ_5695 
+  B    218 ALA       1       1 1:N_5712 1:CA_5713 1:C_5714 1:O_5715 1:CB_5716 
+  B    222 LEU       1       1 1:N_5747 1:CA_5748 1:C_5749 1:CB_5751 1:CG_5752 1:CD1_5753 1:CD2_5754 
+  B    255 MET       1       1 1:SD_5997 1:CE_5998 
+  B    258 PHE       1       1 1:CE2_6024 1:CZ_6025 
+  B    268 PRO       1       1 1:CA_6104 1:CB_6107 1:CG_6108 
+  B    301 VAL       1       1 1:CA_6362 1:C_6363 1:O_6364 1:CB_6365 1:CG1_6366 1:CG2_6367 
+  B    302 ILE       1       1 1:N_6368 1:CA_6369 1:C_6370 1:O_6371 1:CB_6372 1:CG1_6373 1:CG2_6374 1:CD1_6375 
+  B    304 THR       1       1 1:CA_6388 1:C_6389 1:O_6390 1:CB_6391 1:OG1_6392 1:CG2_6393 
+  B    305 ALA       1       1 1:N_6394 1:CA_6395 1:C_6396 1:O_6397 1:CB_6398 
+  B    308 THR       1       1 1:CA_6412 1:CB_6415 1:OG1_6416 1:CG2_6417 
+  B     16 GLY       1       0 1:N_4142 1:CA_4143 1:C_4144 1:O_4145 
+  B    134 PHE       1       0 1:C_5062 1:O_5063 
+  B    135 GLY       1       0 1:N_5071 1:CA_5072 1:C_5073 1:O_5074 
+  B    139 GLY       1       0 1:N_5099 1:CA_5100 
+  B    173 GLY       1       0 1:N_5372 
+  B    214 CYS       1       0 1:O_5682 
+  B    216 LEU       1       0 1:N_5696 
+  B    217 LEU       1       0 1:C_5706 
+  B    219 GLY       1       0 1:N_5717 1:CA_5718 1:C_5719 1:O_5720 
+  B    220 TYR       1       0 1:N_5721 
+  B    303 PHE       1       0 1:N_6376 1:CA_6377 1:C_6378 
+  B    306 GLY       1       0 1:N_6399 1:CA_6400 1:C_6401 

@@ -18,6 +18,7 @@ for (root, dirs, files) in os.walk(pdbFilepath):
     for file in files:
         if file.endswith('.pdb'):
             pdbFiles.append(root+file)
+    break
 
 includeHETATM       = False   
 solventProbeRadius  = 1.4
@@ -25,8 +26,8 @@ gateProbeRadius     = 3
 
 calc_times = list()
 for pdbFile in pdbFiles:
-    if os.path.exists(pdbFile.replace('.pdb', '.a.qtf')):
-        os.remove(pdbFile.replace('.pdb', '.a.qtf'))
+    # if os.path.exists(pdbFile.replace('.pdb', '.a.qtf')):
+    #     os.remove(pdbFile.replace('.pdb', '.a.qtf'))
     
     start = time.time()
 
@@ -43,7 +44,7 @@ for pdbFile in pdbFiles:
 
     compute_channel = time.time()
 
-    MG.write_PyMOL_script(channels, pdbFile.replace('.pdb', '_channel_MGOS.py'))
+    # MG.write_PyMOL_script(channels, pdbFile.replace('.pdb', '_channel_MGOS.py'))
 
     if platform.system() != 'Windows':
         calc_times.append({'pdb' : pdbFile.split('/')[-1].replace('.pdb',''), 'preprocess' : preprocess - start, 'compute_channel' : compute_channel - preprocess})

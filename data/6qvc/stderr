@@ -1,0 +1,4 @@
+SLF4J: The requested version 1.7.16 by your slf4j binding is not compatible with [1.6]
+SLF4J: See http://www.slf4j.org/codes.html#version_mismatch for further details.
+Feb 13, 2023 7:06:57 AM caver.Printer warn
+WARNING: Surface space (shell_depth 5.0) reached starting point, applying starting_point_protection_radius 4.0.

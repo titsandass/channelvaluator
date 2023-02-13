@@ -1,0 +1,50 @@
+Caver computation started.
+Settings loaded from:
+config.txt
+
+Basic parameters:
+starting_point_residue A:244 A:245 A:246 A:247 A:250 A:252 A:254 A:255 A:258 A:912 A:913 A:914 A:916
+probe_radius 1.4
+shell_radius 3.0
+shell_depth 5.0
+frame_weighting_coefficient 1.0
+frame_clustering_threshold 1.0
+
+*** Processing protein.pdb0 ***
+Alternative conformations were removed from residues A:557 (removed conformation A, atoms 2820 2824 2826 2828 2830) in file input/protein.pdb
+1163 atoms removed from these residues: AV0, HOH, NA, NAG, Y01.
+4 redundant tunnels removed.
+1 tunnels stored.
+
+Loading tunnels from data/tunnels/tunnels_protein.pdb0.obj
+Loaded 1 tunnels for protein.pdb0.
+1 tunnels successfully loaded.
+
+Computing average surface for 1 tunnels.
+Average surface represented by 1 points.
+Leaving only the cheapest tunnel per cluster per snapshot - 1 tunnels kept.
+Statistical analysis of results started.
+Saving summary information.
+Saving tunnel characteristics.
+Saving tunnel-lining residues and atoms.
+Alternative conformations were removed from residues A:557 (removed conformation A, atoms 2820 2824 2826 2828 2830) in file input/protein.pdb
+1163 atoms removed from these residues: AV0, HOH, NA, NAG, Y01.
+Saving tunnel profiles.
+Statistical analysis finished.
+Visualizations started.
+Cluster subsampling for visualization: random.
+Visualizations finished.
+
+Finished successfully.
+
+-----------------------------------------------------------------------
+ Thank you for using CAVER, please cite:
+
+ Chovancova, E., Pavelka, A., Benes, P., Strnad, O., Brezovsky, J.,
+ Kozlikova, B., Gora, A., Sustr, V., Klvana, M., Medek, P.,
+ Biedermannova, L., Sochor, J. Damborsky, J. (2012) CAVER 3.0: A Tool
+ for the Analysis of Transport Pathways in Dynamic Protein Structures.
+ PLoS Comput Biol 8: e1002708. doi:10.1371/journal.pcbi.1002708
+-----------------------------------------------------------------------
+Alternative conformations were removed from residues A:557 (removed conformation A, atoms 2820 2824 2826 2828 2830) in file input/protein.pdb
+1163 atoms removed from these residues: AV0, HOH, NA, NAG, Y01.

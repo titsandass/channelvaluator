@@ -1,0 +1,13 @@
+# Config file for CaverWeb job zhvpe4
+starting_point_residue A:84 A:86 A:87 A:88 A:90 A:91 A:92 A:93 A:94 A:95 B:84 B:86 B:87 B:88 B:90 B:91 B:92 B:93 B:94 B:95 C:84 C:86 C:87 C:88 C:90 C:91 C:92 C:93 C:94 C:95 D:84 D:86 D:87 D:88 D:90 D:91 D:92 D:93 D:94 D:95 E:84 E:86 E:87 E:88 E:90 E:91 E:92 E:93 E:94 E:95 A:227 A:236 B:227 B:236 C:227 C:236 D:227 D:236 E:227 E:236
+
+desired_radius 5
+exclude_residue_names CA CL HOH
+shell_radius 3
+shell_depth 5
+clustering_threshold 3.5
+probe_radius 1.4
+max_distance 3
+compute_tunnel_residues yes
+visualization_tunnel_sampling_step 0.5
+seed 1

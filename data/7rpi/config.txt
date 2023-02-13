@@ -1,0 +1,13 @@
+# Config file for CaverWeb job w5b6cj
+starting_point_residue A:244 A:245 A:246 A:247 A:250 A:252 A:254 A:255 A:258 A:912 A:913 A:914 A:916
+
+desired_radius 5
+exclude_residue_names AV0 HOH NA NAG Y01
+shell_radius 3
+shell_depth 5
+clustering_threshold 3.5
+probe_radius 1.4
+max_distance 3
+compute_tunnel_residues yes
+visualization_tunnel_sampling_step 0.5
+seed 1

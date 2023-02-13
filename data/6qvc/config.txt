@@ -1,0 +1,13 @@
+# Config file for CaverWeb job yvhhqg
+starting_point_residue B:302 B:303 B:306 B:307 A:538 A:539 A:540 A:564 A:567 A:568 A:571
+
+desired_radius 5
+exclude_residue_names null
+shell_radius 3
+shell_depth 5
+clustering_threshold 3.5
+probe_radius 1.4
+max_distance 3
+compute_tunnel_residues yes
+visualization_tunnel_sampling_step 0.5
+seed 1

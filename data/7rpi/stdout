@@ -1,0 +1,108 @@
+08:46:08,837 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+08:46:08,838 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+08:46:08,838 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [jar:file:/home/caverweb/app/caverweb-1.2.0.0.jar!/logback.xml]
+08:46:08,839 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs multiple times on the classpath.
+08:46:08,839 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs at [jar:file:/home/caverweb/app/caverweb-1.2.0.0.jar!/logback.xml]
+08:46:08,839 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs at [jar:file:/home/caverweb/app/lib/caverweb-1.2.0.0.jar!/logback.xml]
+08:46:08,856 |-INFO in ch.qos.logback.core.joran.spi.ConfigurationWatchList@12591ac8 - URL [jar:file:/home/caverweb/app/caverweb-1.2.0.0.jar!/logback.xml] is not of type file
+08:46:08,921 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+08:46:08,928 |-INFO in ch.qos.logback.core.joran.util.ConfigurationWatchListUtil@5a7fe64f - Adding [jar:file:/home/caverweb/app/lib/loschmidt-core-1.1-20221013.153158-29.jar!/loschmidt/core/log/core-standard.xml] to configuration watch list.
+08:46:08,928 |-INFO in ch.qos.logback.core.joran.spi.ConfigurationWatchList@12591ac8 - URL [jar:file:/home/caverweb/app/lib/loschmidt-core-1.1-20221013.153158-29.jar!/loschmidt/core/log/core-standard.xml] is not of type file
+08:46:08,930 |-INFO in ch.qos.logback.core.joran.util.ConfigurationWatchListUtil@5a7fe64f - Adding [jar:file:/home/caverweb/app/lib/loschmidt-core-1.1-20221013.153158-29.jar!/loschmidt/core/log/core.xml] to configuration watch list.
+08:46:08,930 |-INFO in ch.qos.logback.core.joran.spi.ConfigurationWatchList@12591ac8 - URL [jar:file:/home/caverweb/app/lib/loschmidt-core-1.1-20221013.153158-29.jar!/loschmidt/core/log/core.xml] is not of type file
+08:46:08,940 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+08:46:08,943 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CORE-STDOUT]
+08:46:08,963 |-INFO in ch.qos.logback.classic.boolex.GEventEvaluator@38145825 - Expression to evaluate [e.mdc?.get("isJob") =~ /true/]
+08:46:09,511 |-INFO in ch.qos.logback.classic.boolex.GEventEvaluator@41330d4f - Expression to evaluate [e.mdc?.get("isCalculation") =~ /true/]
+08:46:09,578 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+08:46:09,581 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CORE-FILE]
+08:46:09,586 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@459718907 - setting totalSizeCap to 30 GB
+08:46:09,589 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@459718907 - No compression will be used
+08:46:09,590 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@459718907 - Will use the pattern log/app.%d{yyyy-MM-dd}.log for the active file
+08:46:09,594 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - The date pattern is 'yyyy-MM-dd' from file name pattern 'log/app.%d{yyyy-MM-dd}.log'.
+08:46:09,594 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Roll-over at midnight.
+08:46:09,598 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Setting initial period to Mon Feb 13 08:46:08 CET 2023
+08:46:09,599 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+08:46:09,601 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[CORE-FILE] - Active log file name: log/app.log
+08:46:09,601 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[CORE-FILE] - File property is set to [log/app.log]
+08:46:09,602 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [loschmidt.core.log.MailAppender]
+08:46:09,603 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CORE-EMAIL]
+08:46:09,604 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+08:46:09,604 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [loschmidt.core.log.ClosingSiftingAppender]
+08:46:09,606 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CORE-JOB]
+08:46:09,609 |-INFO in ch.qos.logback.classic.boolex.GEventEvaluator@3e0e1046 - Expression to evaluate [e.mdc?.get("isJob") =~ /true/]
+08:46:09,630 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.sift.MDCBasedDiscriminator] for [discriminator] property
+08:46:09,634 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [loschmidt.core.log.ClosingSiftingAppender]
+08:46:09,646 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CORE-CALCULATION]
+08:46:09,647 |-INFO in ch.qos.logback.classic.boolex.GEventEvaluator@24c1b2d2 - Expression to evaluate [e.mdc?.get("isCalculation") =~ /true/]
+08:46:09,661 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.sift.MDCBasedDiscriminator] for [discriminator] property
+08:46:09,662 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [loschmidt.core.log.DatabaseAppender]
+08:46:09,662 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CORE-CALCULATION-DB]
+08:46:09,663 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [net.logstash.logback.appender.LogstashUdpSocketAppender]
+08:46:09,666 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CORE-LOGSTASH-SENDER]
+08:46:09,941 |-INFO in net.logstash.logback.appender.LogstashUdpSocketAppender[CORE-LOGSTASH-SENDER] - Defaulting maxMessageSize to [65000]
+08:46:09,942 |-INFO in ch.qos.logback.classic.joran.action.RootLoggerAction - Setting level of ROOT logger to INFO
+08:46:09,942 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [CORE-STDOUT] to Logger[ROOT]
+08:46:09,944 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [CORE-FILE] to Logger[ROOT]
+08:46:09,944 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [CORE-EMAIL] to Logger[ROOT]
+08:46:09,944 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [CORE-JOB] to Logger[ROOT]
+08:46:09,944 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [CORE-CALCULATION] to Logger[ROOT]
+08:46:09,945 |-ERROR in ch.qos.logback.core.joran.action.AppenderRefAction - Could not find an appender named [CORE-CALCULATION-STDOUT]. Did you define it below instead of above in the configuration file?
+08:46:09,945 |-ERROR in ch.qos.logback.core.joran.action.AppenderRefAction - See http://logback.qos.ch/codes.html#appender_order for more details.
+08:46:09,945 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [CORE-CALCULATION-DB] to Logger[ROOT]
+08:46:09,945 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [CORE-LOGSTASH-SENDER] to Logger[ROOT]
+08:46:09,945 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+08:46:09,947 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@7dc19a70 - Registering current configuration as safe fallback point
+
+Caver computation started.
+Settings loaded from:
+/home/caverweb/jobs/w5/w5b6cj/caver/config.txt
+
+Basic parameters:
+starting_point_residue A:244 A:245 A:246 A:247 A:250 A:252 A:254 A:255 A:258 A:912 A:913 A:914 A:916
+probe_radius 1.4
+shell_radius 3.0
+shell_depth 5.0
+frame_weighting_coefficient 1.0
+frame_clustering_threshold 1.0
+
+*** Processing protein.pdb0 ***
+Alternative conformations were removed from residues A:557 (removed conformation A, atoms 2820 2824 2826 2828 2830) in file /home/caverweb/jobs/w5/w5b6cj/caver/input/protein.pdb
+1163 atoms removed from these residues: AV0, HOH, NA, NAG, Y01.
+   
+4 redundant tunnels removed.
+1 tunnels stored.
+
+Loading tunnels from /home/caverweb/jobs/w5/w5b6cj/caver/data/tunnels/tunnels_protein.pdb0.obj
+Loaded 1 tunnels for protein.pdb0.
+1 tunnels successfully loaded.
+
+Computing average surface for 1 tunnels.
+Average surface represented by 1 points.
+Writing data to /home/caverweb/./whole_clustering.csv
+Leaving only the cheapest tunnel per cluster per snapshot - 1 tunnels kept.
+Statistical analysis of results started.
+Saving summary information.
+Saving tunnel characteristics.
+Saving tunnel-lining residues and atoms.
+Alternative conformations were removed from residues A:557 (removed conformation A, atoms 2820 2824 2826 2828 2830) in file /home/caverweb/jobs/w5/w5b6cj/caver/input/protein.pdb
+1163 atoms removed from these residues: AV0, HOH, NA, NAG, Y01.
+Saving tunnel profiles.
+Statistical analysis finished.
+Visualizations started.
+Cluster subsampling for visualization: random.
+Visualizations finished.
+
+Finished successfully.
+
+-----------------------------------------------------------------------
+ Thank you for using CAVER, please cite:
+
+ Chovancova, E., Pavelka, A., Benes, P., Strnad, O., Brezovsky, J.,
+ Kozlikova, B., Gora, A., Sustr, V., Klvana, M., Medek, P.,
+ Biedermannova, L., Sochor, J. Damborsky, J. (2012) CAVER 3.0: A Tool
+ for the Analysis of Transport Pathways in Dynamic Protein Structures.
+ PLoS Comput Biol 8: e1002708. doi:10.1371/journal.pcbi.1002708
+-----------------------------------------------------------------------
+Alternative conformations were removed from residues A:557 (removed conformation A, atoms 2820 2824 2826 2828 2830) in file /home/caverweb/jobs/w5/w5b6cj/caver/input/protein.pdb
+1163 atoms removed from these residues: AV0, HOH, NA, NAG, Y01.

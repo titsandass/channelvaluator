@@ -1,0 +1,49 @@
+# Tunnel-lining resiudes (residues wihtin the 3.0 A distnace from individual tunnels)
+# Column content
+# C:     chain
+# res:   residue index in PDB file
+# AA:    amino acid
+# N:     number of snapshots in which the residue lined the tunnel
+# sideN: same as N, but backbone atoms are not counted (those named H, N, C, O, CA or HA)
+# atoms: tunnel-lining atoms. Format is <number of snapshots>:<atom name>_<atom serial number>
+#
+== Tunnel cluster 1 ==
+# C    res  AA       N   sideN atoms
+  A    540 VAL       1       1 1:N_7847 1:CA_7848 1:CB_7851 1:CG1_7852 1:CG2_7853 
+  A    564 ILE       1       1 1:N_8022 1:CA_8023 1:C_8024 1:O_8025 1:CB_8026 1:CG1_8027 1:CG2_8028 1:CD1_8029 
+  A    567 ASN       1       1 1:N_8043 1:CA_8044 1:C_8045 1:O_8046 1:CB_8047 1:CG_8048 1:OD1_8049 1:ND2_8050 
+  A    568 MET       1       1 1:N_8051 1:CA_8052 1:C_8053 1:O_8054 1:CB_8055 1:CG_8056 1:SD_8057 1:CE_8058 
+  A    571 GLN       1       1 1:CB_8075 1:CG_8076 1:CD_8077 1:OE1_8078 1:NE2_8079 
+  B    117 ASP       1       1 1:C_16 1:CB_18 1:CG_19 1:OD1_20 1:OD2_21 
+  B    121 LEU       1       1 1:CG_50 1:CD1_51 
+  B    300 ARG       1       1 1:CA_1332 1:C_1333 1:O_1334 1:CG_1336 
+  B    303 TRP       1       1 1:N_1362 1:CA_1363 1:C_1364 1:O_1365 1:CB_1366 1:CG_1367 1:CD1_1368 1:CD2_1369 1:NE1_1370 1:CE2_1371 1:CE3_1372 1:CZ2_1373 1:CZ3_1374 1:CH2_1375 
+  B    304 ARG       1       1 1:N_1376 1:CA_1377 1:C_1378 1:O_1379 1:CB_1380 1:CG_1381 1:CD_1382 1:NE_1383 
+  B    306 PHE       1       1 1:C_1393 1:CB_1395 1:CG_1396 1:CD2_1398 
+  B    307 PHE       1       1 1:N_1402 1:CA_1403 1:C_1404 1:CB_1406 1:CG_1407 1:CD1_1408 1:CD2_1409 1:CE1_1410 1:CE2_1411 1:CZ_1412 
+  A    538 HIS       1       0 1:C_7832 
+  A    539 THR       1       0 1:N_7840 1:CA_7841 1:C_7842 1:O_7843 
+  A    563 VAL       1       0 1:C_8017 1:O_8018 
+  A    565 LEU       1       0 1:N_8030 
+  B    115 GLY       1       0 1:N_1 1:CA_2 1:C_3 1:O_4 
+  B    118 GLY       1       0 1:N_22 1:CA_23 1:C_24 1:O_25 
+  B    305 GLY       1       0 1:N_1387 
+  B    308 ALA       1       0 1:N_1413 
+== Tunnel cluster 2 ==
+# C    res  AA       N   sideN atoms
+  A    538 HIS       1       1 1:N_7830 1:CA_7831 1:C_7832 1:O_7833 1:CB_7834 1:CG_7835 1:ND1_7836 1:CD2_7837 1:CE1_7838 1:NE2_7839 
+  A    539 THR       1       1 1:N_7840 1:CA_7841 1:C_7842 1:O_7843 1:CB_7844 1:OG1_7845 1:CG2_7846 
+  A    540 VAL       1       1 1:N_7847 1:CA_7848 1:CB_7851 1:CG1_7852 1:CG2_7853 
+  A    564 ILE       1       1 1:N_8022 1:CA_8023 1:C_8024 1:O_8025 1:CB_8026 1:CG1_8027 1:CG2_8028 1:CD1_8029 
+  A    567 ASN       1       1 1:N_8043 1:CA_8044 1:C_8045 1:O_8046 1:CB_8047 1:CG_8048 1:OD1_8049 1:ND2_8050 
+  A    568 MET       1       1 1:N_8051 1:CA_8052 1:C_8053 1:CB_8055 1:CG_8056 1:SD_8057 1:CE_8058 
+  A    570 ALA       1       1 1:C_8068 1:CB_8070 
+  A    571 GLN       1       1 1:N_8071 1:CA_8072 1:C_8073 1:O_8074 1:CB_8075 1:CG_8076 1:CD_8077 1:OE1_8078 1:NE2_8079 
+  B    303 TRP       1       1 1:N_1362 1:CA_1363 1:C_1364 1:O_1365 1:CB_1366 1:CG_1367 1:CD1_1368 1:CD2_1369 1:NE1_1370 1:CE2_1371 1:CE3_1372 1:CZ2_1373 1:CZ3_1374 1:CH2_1375 
+  B    306 PHE       1       1 1:C_1393 1:CB_1395 1:CG_1396 1:CD2_1398 
+  B    307 PHE       1       1 1:N_1402 1:CA_1403 1:CB_1406 1:CG_1407 1:CD1_1408 1:CD2_1409 1:CE1_1410 
+  A    534 GLY       1       0 1:O_7811 
+  A    537 SER       1       0 1:C_7826 1:O_7827 
+  A    563 VAL       1       0 1:C_8017 1:O_8018 
+  A    565 LEU       1       0 1:N_8030 
+  B    304 ARG       1       0 1:N_1376 1:CA_1377 

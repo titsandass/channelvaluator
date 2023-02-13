@@ -26,10 +26,10 @@ class ChannelValuator:
         self._pdbFileName = pdbFileName
         self._includeHETATM = includeHETATM
         
-        proteinName = pdbFileName.split('\\')[-1].replace('.pdb','')
+        self._proteinName = pdbFileName.split('\\')[-1].replace('.pdb','')
         if platform.system() != 'Windows':
-            proteinName = pdbFileName.split('/')[-1].replace('.pdb','')
-        self._protein = Protein(proteinName)
+            self._proteinName = pdbFileName.split('/')[-1].replace('.pdb','')
+        self._protein = Protein(self._proteinName)
 
         with open(pdbFileName, 'r') as pdbFile:
             lines = pdbFile.readlines()
@@ -110,18 +110,18 @@ class ChannelValuator:
     def _parse_channel_MOLE(self, MOLEchannelFilePath, channels):
         with open(MOLEchannelFilePath) as f:
             lines = f.readlines()
+            sphere = [None, None, None, None]
             for line in lines:
                 if line.startswith('def Tunnel'):
                     continue
-                if line.startswith('  addAtom'):
-                    sphereInfo = line.split('(')[1].replace(')', '')
-                    _, _, r, x, y, z = sphereInfo.split(',')
-                    x = np.float32(x)
-                    y = np.float32(y)
-                    z = np.float32(z)
-                    r = np.float32(r)
-                    sphere = (x,y,z,r)
-                    channels.add_sphere(sphere)
+                if line.startswith('   at.vdw'):
+                    r = np.float32(line.split()[-1])
+                    sphere = [None, None, None, r]
+                if line.startswith('   at.coord'):
+                    x, y, z = map(np.float32, line.rstrip(']').split('[')[-1].split(', '))
+                    sphere[0], sphere[1], sphere[2] = x, y, z
+
+                    channels.add_sphere(tuple(sphere))
     
     def _parse_channel_CAVER(self, CAVERchannelFilePath, channels):
         tunnelFiles = list()
@@ -300,6 +300,17 @@ class ChannelValuator:
     #                 self._channels[software]['RevealedVertices'] += 1
 
 ###################################################################
+    def write_channel_statistics(self, resultFileName, time):
+        with open(resultFileName, 'w') as f:
+            f.write('Protein {} took {} seconds'.format(self._proteinName, round(time)))
+            for software in self._channels.keys():
+                self._channels[software]['TotalVertices'] = len(self._channels[software]._intersectingVertices)
+                self._channels[software]['BuriedVertices'] = len(self._channels[software]._buriedVertices)
+                self._channels[software]['RevealedVertices'] = self._channels[software]['TotalVertices'] - self._channels[software]['BuriedVertices']
+
+                f.write('{}\t\t{}\t\t{}\t\t{}\t\t{}\n'.format(software, self._channels[software]['TotalVertices'], self._channels[software]['BuriedVertices'], self._channels[software]['RevealedVertices']))
+        pass
+
     def write_result_in_PyMOL_script(self, resultFileName):
         with open(resultFileName, 'w') as f:
             f.writelines('''from pymol.cgo import *

@@ -1,0 +1,47 @@
+Caver computation started.
+Settings loaded from:
+config.txt
+
+Basic parameters:
+starting_point_residue A:227 A:236 A:84 A:86 A:87 A:88 A:90 A:91 A:92 A:93 A:94 A:95 B:227 B:236 B:84 B:86 B:87 B:88 B:90 B:91 B:92 B:93 B:94 B:95 C:227 C:236 C:84 C:86 C:87 C:88 C:90 C:91 C:92 C:93 C:94 C:95 D:227 D:236 D:84 D:86 D:87 D:88 D:90 D:91 D:92 D:93 D:94 D:95 E:227 E:236 E:84 E:86 E:87 E:88 E:90 E:91 E:92 E:93 E:94 E:95
+probe_radius 1.4
+shell_radius 3.0
+shell_depth 5.0
+frame_weighting_coefficient 1.0
+frame_clustering_threshold 1.0
+
+*** Processing protein.pdb0 ***
+471 atoms removed from these residues: CA, CL, HOH.
+2 redundant tunnels removed.
+1 tunnels stored.
+
+Loading tunnels from data/tunnels/tunnels_protein.pdb0.obj
+Loaded 1 tunnels for protein.pdb0.
+1 tunnels successfully loaded.
+
+Computing average surface for 1 tunnels.
+Average surface represented by 1 points.
+Leaving only the cheapest tunnel per cluster per snapshot - 1 tunnels kept.
+Statistical analysis of results started.
+Saving summary information.
+Saving tunnel characteristics.
+Saving tunnel-lining residues and atoms.
+471 atoms removed from these residues: CA, CL, HOH.
+Saving tunnel profiles.
+Statistical analysis finished.
+Visualizations started.
+Cluster subsampling for visualization: random.
+Visualizations finished.
+
+Finished successfully.
+
+-----------------------------------------------------------------------
+ Thank you for using CAVER, please cite:
+
+ Chovancova, E., Pavelka, A., Benes, P., Strnad, O., Brezovsky, J.,
+ Kozlikova, B., Gora, A., Sustr, V., Klvana, M., Medek, P.,
+ Biedermannova, L., Sochor, J. Damborsky, J. (2012) CAVER 3.0: A Tool
+ for the Analysis of Transport Pathways in Dynamic Protein Structures.
+ PLoS Comput Biol 8: e1002708. doi:10.1371/journal.pcbi.1002708
+-----------------------------------------------------------------------
+471 atoms removed from these residues: CA, CL, HOH.
