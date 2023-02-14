@@ -1,0 +1,7 @@
+Protein 6vx7 took 296 seconds
+Ground Truth Empty Vertices 2794143
+Atom Overlapping Vertices 894890
+Software		TotalVertices		BuriedVertices		RevealedVertices
+MGOS		98335		26		98309
+MOLE		36646		97		36549
+CAVER		39659		2		39657

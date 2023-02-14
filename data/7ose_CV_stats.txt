@@ -1,0 +1,7 @@
+Protein 7ose took 271 seconds
+Ground Truth Empty Vertices 2532023
+Atom Overlapping Vertices 801215
+Software		TotalVertices		BuriedVertices		RevealedVertices
+MGOS		81485		14		81471
+MOLE		36800		119		36681
+CAVER		2955		1		2954
