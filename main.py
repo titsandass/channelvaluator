@@ -1,11 +1,11 @@
 def CV(pdbFileName):
     print('0.Protein {}'.format(pdbFileName))
 
-    channelFilePaths    = {
-        'MGOS'  : pdbFileName.replace('.pdb','_channel_parsed_MGOS.py'),
-        'MOLE'  : pdbFileName.replace('.pdb','_channel_MOLE.py'),
-        'CAVER' : pdbFileName.replace('.pdb','/tunnels/'),
-        '3V'    : pdbFileName.replace('.pdb','_channel_3V.py')
+    channelFilePaths = {
+        'MGOS': pdbFileName.replace('.pdb', '_channel_parsed_MGOS.py'),
+        'MOLE': pdbFileName.replace('.pdb', '_channel_MOLE.py'),
+        'CAVER': pdbFileName.replace('.pdb', '/tunnels/'),
+        '3V': pdbFileName.replace('.pdb', '_channel_3V.py')
     }
 
     start = time.time()
@@ -31,12 +31,14 @@ def CV(pdbFileName):
 
     done = time.time()
 
+
 print('8.write_channel_statistics')
-CV.write_channel_statistics(pdbFileName.replace('.pdb', '_CV_stats.py'), done-start)
+CV.write_channel_statistics(pdbFileName.replace(
+    '.pdb', '_CV_stats.py'), done-start)
 print('9.write_result_in_PyMOL_script')
 CV.write_result_in_PyMOL_script(pdbFileName.replace('.pdb', '_CV_result.py'))
 
-    print('Done')
+print('Done')
 
 if __name__ == '__main__':
     import os, sys, platform
@@ -44,10 +46,10 @@ if __name__ == '__main__':
 
     from channelValuator import ChannelValuator
 
-    libPath         = os.getcwd() + "\\lib\\"
-    pdbFilepath     = os.getcwd() + "\\data\\"
-    resultFilepath  = os.getcwd() + "\\channels\\"
-    logFilepath     = os.getcwd() + "\\channels\\"
+    libPath = os.getcwd() + "\\lib\\"
+    pdbFilepath = os.getcwd() + "\\data\\"
+    resultFilepath = os.getcwd() + "\\channels\\"
+    logFilepath = os.getcwd() + "\\channels\\"
     if platform.system() != 'Windows':
         libPath = libPath.replace('\\', '/')
         pdbFilepath = pdbFilepath.replace('\\', '/')
@@ -64,11 +66,11 @@ if __name__ == '__main__':
                 pdbFiles.append(root+file)
         break
 
-    includeHETATM       = False
-    cutoffRatio         = 3
-    initialIncrement    = 0
-    step                = 0.2
-    gridSize            = 0.5
+    includeHETATM = False
+    cutoffRatio = 3
+    initialIncrement = 0
+    step = 0.2
+    gridSize = 0.5
 
     # print(*sys.argv)
     CV(sys.argv[1])
