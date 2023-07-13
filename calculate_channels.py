@@ -20,6 +20,8 @@ for (root, dirs, files) in os.walk(pdbFilepath):
             pdbFiles.append(root+file)
     break
 
+# pdbFiles = ['C:\\Users\\hwkim\\Desktop\\workspaces\\ChannelValuator\\data\\4bpc.pdb']
+
 includeHETATM       = False   
 solventProbeRadius  = 1.4
 gateProbeRadius     = 3
@@ -44,7 +46,7 @@ for pdbFile in pdbFiles:
 
     compute_channel = time.time()
 
-    # MG.write_PyMOL_script(channels, pdbFile.replace('.pdb', '_channel_MGOS.py'))
+    MG.write_PyMOL_script(channels, pdbFile.replace('.pdb', '_channel_MGOS.py'))
 
     if platform.system() != 'Windows':
         calc_times.append({'pdb' : pdbFile.split('/')[-1].replace('.pdb',''), 'preprocess' : preprocess - start, 'compute_channel' : compute_channel - preprocess})
@@ -55,6 +57,7 @@ for pdbFile in pdbFiles:
 
 with open(logFilepath+'MGOS_calctime.pickle', 'wb') as f:
     pickle.dump(calc_times, f)
+
 # MolecularChannelSet MG.compute_channels(const double& solventProbeRadius, const double& gateSize)
 # MolecularVoidSet    MG.compute_voids_of_Lee_Richards_model(const double& solventProbeRadius)
 # MolecularPocketSet  MG.compute_pockets(const double& ligandSize, const double& solventProbeRadius)

@@ -4,7 +4,7 @@ currdir = os.getcwd() + '\\data\\'
 MGOSChannels = list()
 for (root, dirs, files) in os.walk(currdir):
     for file in files:
-        if file.endswith('channel_MGOS.py'):
+        if file.endswith('_channel_MGOS.py'):
             MGOSChannels.append(currdir+file)
 
 

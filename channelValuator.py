@@ -202,6 +202,9 @@ class ChannelValuator:
     def _set_boundary_gridVertices(self):
         for inflatedAtom in self._inflatedAtoms.atoms:
             includingGridVertices = self._grid.get_including_gridVertices_of(inflatedAtom)
+            if includingGridVertices.size == 0:
+                continue
+
             for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
                 vertex = ivertex.item()
                 if vertex.is_boundary():
@@ -258,6 +261,10 @@ class ChannelValuator:
     def verify_atom_overlapping_vertices(self):
         for atomInfo in self._protein.atoms:
             includingGridVertices = self._grid.get_including_gridVertices_of(atomInfo)
+
+            if includingGridVertices.size == 0:
+                continue
+
             for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
                 vertex = ivertex.item()
                 if not vertex.is_boundary():
@@ -317,9 +324,9 @@ class ChannelValuator:
 from pymol import cmd
 import os
 
-cmd.fetch('2OBI')
+cmd.fetch('{}')
 view = cmd.get_view()     
-''')        
+'''.format(self._protein.name))        
             
             f.writelines('''
 bounding_box = [
@@ -395,7 +402,7 @@ cmd.load_cgo(buried_vertices, 'buried_vertices')\n\n'''
             
             f.writelines('''
 
-cmd.group('result_{}', '2OBI', 'add')                       
+cmd.group('result_{}', '{}', 'add')                       
 cmd.group('result_{}', 'bounding_box', 'add')
 cmd.group('result_{}', 'inflated_atoms', 'add')
 cmd.group('result_{}', 'ground_truth', 'add') 
@@ -403,7 +410,7 @@ cmd.group('result_{}', 'channel_vertices', 'add')
 cmd.group('result_{}', 'buried_vertices', 'add') 
 
 cmd.set_view(view)
-'''.format(self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name))
+'''.format(self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name, self._protein.name))
             
         
             

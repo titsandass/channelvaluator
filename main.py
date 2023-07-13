@@ -9,7 +9,7 @@ if platform.system() != 'Windows':
     pdbFilepath = pdbFilepath.replace('\\', '/')
     resultFilepath = resultFilepath.replace('\\', '/')
 
-pdbFileName = pdbFilepath+'2OBI.pdb'
+pdbFileName = pdbFilepath+'4bpc.pdb'
 
 channelFilePaths    = {
     'MGOS'  : pdbFileName.replace('.pdb','_channel_parsed_MGOS.py'),
@@ -48,7 +48,7 @@ CV.verify_channel_overlapping_vertices()
 done = time.time()
 
 print('8.write_channel_statistics')
-CV.write_channel_statistics(pdbFileName.replace('.pdb', '_CV_stats.py'), done-start)
+# CV.write_channel_statistics(pdbFileName.replace('.pdb', '_CV_stats.py'), done-start)
 print('9.write_result_in_PyMOL_script')
 CV.write_result_in_PyMOL_script(pdbFileName.replace('.pdb', '_CV_result.py'))
 
