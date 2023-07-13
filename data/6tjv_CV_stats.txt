@@ -1,0 +1,6 @@
+Protein 6tjv took 479 seconds
+Ground Truth Empty Vertices 3170101
+Atom Overlapping Vertices 1024534
+Software		TotalVertices		BuriedVertices		RevealedVertices
+MGOS		134783		45		134738
+MOLE		46265		160		46105

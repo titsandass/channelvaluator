@@ -1,0 +1,6 @@
+Protein 7dgz took 1822 seconds
+Ground Truth Empty Vertices 15111255
+Atom Overlapping Vertices 3911709
+Software		TotalVertices		BuriedVertices		RevealedVertices
+MGOS		1481251		649		1480602
+MOLE		39347		97		39250

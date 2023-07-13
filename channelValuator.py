@@ -118,7 +118,7 @@ class ChannelValuator:
                     r = np.float32(line.split()[-1])
                     sphere = [None, None, None, r]
                 if line.startswith('   at.coord'):
-                    x, y, z = map(np.float32, line.rstrip(']').split('[')[-1].split(', '))
+                    x, y, z = map(np.float32, line.rstrip(']\n').split('[')[-1].split(', '))
                     sphere[0], sphere[1], sphere[2] = x, y, z
 
                     channels.add_sphere(tuple(sphere))
@@ -204,7 +204,7 @@ class ChannelValuator:
             includingGridVertices = self._grid.get_including_gridVertices_of(inflatedAtom)
             if includingGridVertices.size == 0:
                 continue
-
+            
             for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
                 vertex = ivertex.item()
                 if vertex.is_boundary():
@@ -261,10 +261,6 @@ class ChannelValuator:
     def verify_atom_overlapping_vertices(self):
         for atomInfo in self._protein.atoms:
             includingGridVertices = self._grid.get_including_gridVertices_of(atomInfo)
-
-            if includingGridVertices.size == 0:
-                continue
-
             for ivertex in np.nditer(includingGridVertices, flags=['refs_ok']):
                 vertex = ivertex.item()
                 if not vertex.is_boundary():
@@ -309,13 +305,26 @@ class ChannelValuator:
 ###################################################################
     def write_channel_statistics(self, resultFileName, time):
         with open(resultFileName, 'w') as f:
-            f.write('Protein {} took {} seconds'.format(self._proteinName, round(time)))
+            f.write('Protein {} took {} seconds\n'.format(self._proteinName, round(time)))
+
+            numtotalVs = 0
+            numatomVs = 0
+            for ivertex in np.nditer(self._grid._Vertices, flags=['refs_ok']):
+                vertex = ivertex.item()
+                if vertex.is_boundary() or vertex.is_interior():
+                    numtotalVs += 1
+                if vertex.is_checked_atom():
+                    numatomVs += 1
+            f.write('Ground Truth Empty Vertices {}\n'.format(numtotalVs))
+            f.write('Atom Overlapping Vertices {}\n'.format(numatomVs))
+
+            f.write('Software\t\tTotalVertices\t\tBuriedVertices\t\tRevealedVertices\n')
             for software in self._channels.keys():
-                self._channels[software]['TotalVertices'] = len(self._channels[software]._intersectingVertices)
-                self._channels[software]['BuriedVertices'] = len(self._channels[software]._buriedVertices)
+                self._channels[software]['TotalVertices'] = len(self._channels[software]['channel']._intersectingVertices)
+                self._channels[software]['BuriedVertices'] = len(self._channels[software]['channel']._buriedVertices)
                 self._channels[software]['RevealedVertices'] = self._channels[software]['TotalVertices'] - self._channels[software]['BuriedVertices']
 
-                f.write('{}\t\t{}\t\t{}\t\t{}\t\t{}\n'.format(software, self._channels[software]['TotalVertices'], self._channels[software]['BuriedVertices'], self._channels[software]['RevealedVertices']))
+                f.write('{}\t\t{}\t\t{}\t\t{}\n'.format(software, self._channels[software]['TotalVertices'], self._channels[software]['BuriedVertices'], self._channels[software]['RevealedVertices']))
         pass
 
     def write_result_in_PyMOL_script(self, resultFileName):

@@ -1,0 +1,6 @@
+Protein 6zkc took 1547 seconds
+Ground Truth Empty Vertices 9426139
+Atom Overlapping Vertices 2874207
+Software		TotalVertices		BuriedVertices		RevealedVertices
+MGOS		540772		191		540581
+MOLE		186717		572		186145
